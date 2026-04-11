@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Victime{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <div class="container mt-4">
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white d-flex align-items-center">
+                {% if victime.photo %}
+                    <img src="{{ asset('uploads/photos/' ~ victime.photo) }}" 
+                         alt="Photo de {{ victime.nom }}" 
+                         class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width:60px;height:60px;">
+                        {{ victime.nom|first|upper }}
+                    </div>
+                {% endif %}
+                <h3 class="mb-0">{{ victime.nom|upper }} {{ victime.postnom|upper }} {{ victime.prenom }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Sexe :</strong> {{ victime.sexe ?: 'Non précisé' }}</div>
+                    <div class="col-md-4"><strong>Adresse :</strong> {{ victime.adresse ?: 'Non précisée' }}</div>
+                    <div class="col-md-4"><strong>Téléphone :</strong> {{ victime.telephone ?: 'Non précisé' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>N° Dossier :</strong> {{ victime.numeroDossier ?: 'Non précisé' }}</div>
+                    <div class="col-md-4"><strong>Date d'enregistrement :</strong> {{ victime.dateEnregistrement ? victime.dateEnregistrement|date('d/m/Y H:i') : 'Non précisée' }}</div>
+                    <div class="col-md-4"><strong>Enregistré par :</strong> {{ victime.user ? victime.user.username : 'Inconnu' }}</div>
+                </div>
+            </div>
+        </div>
+
+        {# Parcelles de la victime #}
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">📦 Parcelles associées</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if victime.parcelles|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Localisation (Avenue)</th>
+                                    <th>N° Parcelle</th>
+                                    <th class="text-center">Occupants (H/F/E)</th>
+                                    <th>Date Enreg.</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for parcelle in victime.parcelles %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ parcelle.avenue ? parcelle.avenue.nom : 'Non précisée' }}</td>
+                                        <td>№ {{ parcelle.numero }}</td>
+                                        <td class="text-center">{{ parcelle.homme }} / {{ parcelle.femme }} / {{ parcelle.enfant }}</td>
+                                        <td>{{ parcelle.datecreated ? parcelle.datecreated|date('d/m/Y') : 'Non précisée' }}</td>
+                                        <td>
+                                            <a href="{{ path('app_parcelle_show', {'id': parcelle.id}) }}" class="btn btn-outline-primary btn-sm">Voir</a>
+                                            <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-outline-warning btn-sm">Modifier</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-folder-x display-4"></i>
+                        <p class="mt-2">Cette victime n'a pas encore de parcelle enregistrée.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a href="{{ path('app_victime_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Retour à la liste des victimes
+            </a>
+        </div>
+    </div>
+</main>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fc;
+    }
+</style>
+{% endblock %}

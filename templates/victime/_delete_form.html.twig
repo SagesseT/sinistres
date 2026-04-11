@@ -1,0 +1,43 @@
+<button type="button" class="btn btn-danger d-flex align-items-center gap-1"
+        data-bs-toggle="modal" data-bs-target="#deleteModal{{ victime.id }}">
+    <i class="bi bi-trash"></i> Supprimer
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal{{ victime.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">⚠️ Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <p>Voulez-vous vraiment supprimer cette victime ?</p>
+                <strong class="text-danger">
+                    {{ victime.nom }} {{ victime.prenom }}
+                </strong>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Annuler
+                </button>
+
+                <form method="post"
+                      action="{{ path('app_victime_delete', {'id': victime.id}) }}">
+
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ victime.id) }}">
+
+                    <button class="btn btn-danger">
+                        🗑️ Confirmer suppression
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

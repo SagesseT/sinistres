@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Importer victimes{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <div class="container mt-4">
+
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4>📥 Importer victimes via Excel / CSV</h4>
+            </div>
+
+            <div class="card-body">
+
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Fichier CSV</label>
+                        <input type="file" name="file" class="form-control" required>
+                        <small class="text-muted">
+                            Format séparateur : ; (point-virgule)
+                        </small>
+                    </div>
+
+                    <button class="btn btn-success">
+                        <i class="bi bi-upload"></i> Importer
+                    </button>
+
+                    <a href="{{ path('app_victime_index') }}" class="btn btn-secondary">
+                        Retour
+                    </a>
+                </form>
+
+                <hr>
+
+                <h6>📌 Format attendu :</h6>
+                <pre>
+Nom;Postnom;Prenom;Avenue;Numero;Hommes;Femmes;Enfants;Document;Telephone;Description
+KABILA;Jean;Pierre;Ngaliema;45;2;3;1;AO;099999999;Maison détruite
+                </pre>
+
+            </div>
+        </div>
+
+    </div>
+</main>
+{% endblock %}

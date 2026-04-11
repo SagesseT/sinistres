@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<main id="main" class="main">
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            ➕ Nouvelle Avenue
+        </div>
+        <div class="card-body">
+            {{ include('avenue/_form.html.twig') }}
+        </div>
+    </div>
+</div>
+</main>
+{% endblock %}

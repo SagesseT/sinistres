@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Parcelle{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+
+<div class="container-fluid mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-dark">✏️ Modifier la parcelle</h3>
+
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary">
+                ← Retour
+            </a>
+            <button form="parcelle-form" class="btn btn-success">
+                💾 Enregistrer
+            </button>
+        </div>
+    </div>
+
+    <!-- CARD PRINCIPALE -->
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-warning text-dark fw-bold">
+            🏠 Informations de la parcelle
+        </div>
+
+        <div class="card-body">
+
+            {{ form_start(form, {'attr': {'id': 'parcelle-form'}}) }}
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    {{ form_row(form.victime, {'attr': {'class': 'form-select'}}) }}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form_row(form.avenue, {'attr': {'class': 'form-select'}}) }}
+                </div>
+
+                <div class="col-md-12">
+                    {{ form_row(form.numero, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form_row(form.homme, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form_row(form.femme, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form_row(form.enfant, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form_row(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form_row(form.observation, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <!-- DOCUMENTS -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold">📎 Documents de la parcelle</h5>
+
+                <button type="button" class="btn btn-primary btn-sm" id="add-document">
+                    ➕ Ajouter document
+                </button>
+            </div>
+
+            <div id="documents-wrapper"
+                 data-prototype="{{ form_widget(form.documents.vars.prototype)|e('html_attr') }}">
+
+                {% for document in form.documents %}
+                    <div class="card mb-3 shadow-sm border-0 p-3">
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                {{ form_row(document.typedocument) }}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form_row(document.fichier) }}
+                            </div>
+
+                        </div>
+
+                        {% if document.vars.data.fichier %}
+                            <div class="mt-2">
+                                <span class="badge bg-info">Fichier actuel</span>
+                                <a class="ms-2" target="_blank"
+                                   href="{{ asset('uploads/documents/' ~ document.vars.data.fichier) }}">
+                                    📄 Voir document
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        <div class="text-end mt-2">
+                            <button type="button" class="btn btn-outline-danger btn-sm remove-document">
+                                ❌ Supprimer
+                            </button>
+                        </div>
+
+                    </div>
+                {% endfor %}
+
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+</main>
+
+<!-- SCRIPT -->
+<script>
+let container = document.getElementById('documents-wrapper');
+let index = {{ form.documents|length }};
+
+document.getElementById('add-document').addEventListener('click', function () {
+
+    let prototype = container.dataset.prototype;
+    let newForm = prototype.replace(/__name__/g, index);
+    index++;
+
+    let div = document.createElement('div');
+    div.classList.add('card', 'mb-3', 'shadow-sm', 'border-0', 'p-3');
+
+    div.innerHTML = `
+        <div class="row g-3">${newForm}</div>
+        <div class="text-end mt-2">
+            <button type="button" class="btn btn-outline-danger btn-sm remove-document">
+                ❌ Supprimer
+            </button>
+        </div>
+    `;
+
+    container.appendChild(div);
+});
+
+// supprimer document
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-document')) {
+        e.target.closest('.card').remove();
+    }
+});
+</script>
+
+{% endblock %}

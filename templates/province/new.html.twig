@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Province{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <h1>Create new Province</h1>
+
+    {{ include('province/_form.html.twig') }}
+
+    <a href="{{ path('app_province_index') }}">back to list</a>
+     </main>
+{% endblock %}

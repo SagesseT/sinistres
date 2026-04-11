@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Victime{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+<div class="container mt-4">
+
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">➕ Enregistrement d'une victime</h4>
+        </div>
+
+        <div class="card-body">
+
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+            <div class="row g-3">
+
+                {# ================= PHOTO ================= #}
+                <div class="col-md-4 text-center">
+
+                    <div class="mb-3">
+                        <img id="preview"
+                             src="{{ asset('assets1/img/profile-img.jpg') }}"
+                             class="img-thumbnail rounded shadow"
+                             style="width:150px;height:150px;object-fit:cover;">
+                    </div>
+
+                    <label class="form-label fw-bold">📷 Photo</label>
+                    {{ form_widget(form.photo, {'attr': {'class': 'form-control', 'id': 'photoInput'}}) }}
+
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="openCamera">
+                        📸 Capturer
+                    </button>
+
+                    <video id="video" width="100%" class="mt-2 d-none" autoplay></video>
+                    <canvas id="canvas" class="d-none"></canvas>
+
+                    <button type="button" class="btn btn-success btn-sm mt-2 d-none" id="captureBtn">
+                        ✅ Prendre photo
+                    </button>
+
+                </div>
+
+                {# ================= INFOS ================= #}
+                <div class="col-md-8">
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Nom</label>
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Postnom</label>
+                            {{ form_widget(form.postnom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Prénom</label>
+                            {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Sexe</label>
+                            {{ form_widget(form.sexe, {'attr': {'class': 'form-select'}}) }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Téléphone</label>
+                            {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Adresse</label>
+                            {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            {# ================= BOUTONS ================= #}
+            <div class="d-flex justify-content-between flex-wrap gap-2">
+
+                <a href="{{ path('app_victime_index') }}" class="btn btn-secondary">
+                    ⬅️ Retour
+                </a>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success">
+                        💾 Enregistrer
+                    </button>
+                </div>
+
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+{# ================= SCRIPT PHOTO ================= #}
+<script>
+const photoInput = document.getElementById('photoInput');
+const preview = document.getElementById('preview');
+
+photoInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+    }
+});
+
+const openCamera = document.getElementById('openCamera');
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const captureBtn = document.getElementById('captureBtn');
+
+openCamera.addEventListener('click', async () => {
+    video.classList.remove('d-none');
+    captureBtn.classList.remove('d-none');
+
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+});
+
+captureBtn.addEventListener('click', () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+
+    canvas.toBlob(function(blob) {
+        let file = new File([blob], "photo.png", { type: "image/png" });
+
+        let container = new DataTransfer();
+        container.items.add(file);
+
+        document.querySelector('#photoInput').files = container.files;
+
+        preview.src = URL.createObjectURL(file);
+    });
+
+    video.srcObject.getTracks().forEach(track => track.stop());
+    video.classList.add('d-none');
+    captureBtn.classList.add('d-none');
+});
+</script>
+
+</main>
+{% endblock %}

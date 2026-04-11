@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<main id="main" class="main">
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            📥 Importer Avenues
+        </div>
+
+        <div class="card-body">
+
+            <form method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label>Fichier CSV</label>
+                    <input type="file" name="file" class="form-control" required>
+                </div>
+
+                <button class="btn btn-success">
+                    📤 Importer
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+</main>
+{% endblock %}

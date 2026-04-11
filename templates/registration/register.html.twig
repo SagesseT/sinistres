@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    {{ parent() }} -Register 
+{% endblock %}
+{% block body  %}
+    <main id="main" class="main"> 
+
+        <div class="container">
+            <h1> Créer votre compte</h1>
+            <p> Entrez vos informations pour créer un compte</p>
+
+            {{ form_errors(registrationForm) }}
+
+            {{ form_start(registrationForm) }}
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="form-outline">
+                        <label class="form-label" for="titre">Nom</label>
+                        {{ form_widget(registrationForm.nom) }}
+
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="form-outline">
+                        <label class="form-label" for="titre">Postnom</label>
+                        {{ form_widget(registrationForm.postnom) }}
+
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-outline">
+                        <label class="form-label" for="titre">Prénom</label>
+                        {{ form_widget(registrationForm.prenom) }}
+
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-outline">
+                        <label class="form-label" for="titre">Sexe</label>
+                        {{ form_widget(registrationForm.sexe) }}
+
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-outline">
+                        <label class="form-label" for="titre">Téléphone</label>
+                        {{ form_widget(registrationForm.telephone) }}
+
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-outline">
+                        <label class="form-label" for="titre">Adresse</label>
+                        {{ form_widget(registrationForm.adresse) }}
+
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 mb-3">
+                    <div class="form-outline">
+                        <label class="form-label" for="titre">Nom Utilisateur</label>
+                        {{ form_widget(registrationForm.username) }}
+
+                    </div>
+                </div> 
+                <div class="col-md-4 mb-3">
+                    <div class="form-outline">
+                        <label class="form-label" for="titre">Mot de passe</label>
+                        {{ form_widget(registrationForm.plainPassword) }}
+
+                    </div>
+                </div> 
+            </div>
+            <div class="row"> 
+                <div class="col-md-12">
+                    <div class="form-group p-0">                    
+                        <button type="submit" class="btn btn-primary">
+                            <i class="icofont-save" aria-hidden="true"></i> Créer votre compte
+                        </button>
+                        Avez vous déjà un compte?
+                        <a href="{{ path('app_login') }}" class="btn btn-success">
+                            <i class="icofont-arrow-left" aria-hidden="true"></i>Connectez-vous
+                        </a>                    
+                    </div>                
+                </div>
+            </div>
+
+            {{ form_end(registrationForm) }}
+ </main> 
+  
+{% endblock %}
+
+
+
+
+{#
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <h1>Register</h1>
+
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.username) }}
+        {{ form_row(registrationForm.plainPassword, {
+            label: 'Password'
+        }) }}
+        {{ form_row(registrationForm.agreeTerms) }}
+
+        <button type="submit" class="btn">Register</button>
+    {{ form_end(registrationForm) }}
+</main>
+{% endblock %}
+#}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Pays{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <h1>Create new Pays</h1>
+
+    {{ include('pays/_form.html.twig') }}
+
+    <a href="{{ path('app_pays_index') }}">back to list</a>
+    </main>
+{% endblock %}

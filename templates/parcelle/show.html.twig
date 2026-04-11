@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Parcelle{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <div class="container mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 text-gray-800">🏠 Détails de la Parcelle</h1>
+            <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Informations Générales</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Victime (Propriétaire)</dt>
+                    <dd class="col-sm-9">{{ parcelle.victime.nom|upper }} {{ parcelle.victime.prenom }} (Dossier: {{ parcelle.victime.numerodossier }})</dd>
+
+                    <dt class="col-sm-3">Avenue</dt>
+                    <dd class="col-sm-9">{{ parcelle.avenue ? parcelle.avenue.nom : 'Non précisée' }}</dd>
+
+                    <dt class="col-sm-3">Numéro de la parcelle</dt>
+                    <dd class="col-sm-9">{{ parcelle.numero }}</dd>
+
+                    <dt class="col-sm-3">Recensement des occupants</dt>
+                    <dd class="col-sm-9">H: {{ parcelle.homme }}, F: {{ parcelle.femme }}, E: {{ parcelle.enfant }}</dd>
+
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">{{ parcelle.description ?: 'Aucune description' }}</dd>
+
+                    <dt class="col-sm-3">Observations</dt>
+                    <dd class="col-sm-9">{{ parcelle.observation ?: 'Aucune observation' }}</dd>
+
+                    <dt class="col-sm-3">Enregistré le</dt>
+                    <dd class="col-sm-9">{{ parcelle.datecreated|date('d/m/Y H:i') }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">📎 Documents liés</h5>
+            </div>
+            <div class="card-body">
+                {% if parcelle.documents|length > 0 %}
+                    <div class="row g-3">
+                        {% for document in parcelle.documents %}
+                            <div class="col-md-4">
+                                <div class="card h-100 border-primary shadow-sm">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ document.typedocument.nom }}</h6>
+                                        <p class="card-text"><small class="text-muted">Upload: {{ document.dateUpload|date('d/m/Y H:i') }}</small></p>
+                                        <a href="{{ asset('uploads/documents/' ~ document.fichier) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            📄 Télécharger
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted"><i class="bi bi-folder-x"></i> Aucun document associé à cette parcelle.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Modifier la parcelle
+            </a>
+        </div>
+    </div>
+
+</main>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fc;
+    }
+    .card h6 {
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

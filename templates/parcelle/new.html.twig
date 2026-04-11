@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une Parcelle{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <div class="container mt-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">🏠 Enregistrement d'une nouvelle parcelle</h3>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="row g-3">
+                    {# Section Localisation / Dossier #}
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Victime (Sinistré)</label>
+                        {{ form_widget(form.victime, {'attr': {'class': 'form-select', 'readonly': true}}) }}
+                        <div class="form-text">Liez cette parcelle au dossier de la victime.</div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Avenue</label>
+                        {{ form_widget(form.avenue, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Numéro de la parcelle</label>
+                        {{ form_widget(form.numero, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 45/B'}}) }}
+                    </div>
+
+                    <hr class="my-4">
+
+                    {# Section Démographie #}
+                    <h5 class="mb-3 text-secondary">Recensement des occupants</h5>
+                    <div class="col-md-4">
+                        <label class="form-label">Nombre d'hommes</label>
+                        {{ form_widget(form.homme, {'attr': {'class': 'form-control', 'min': 0}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Nombre de femmes</label>
+                        {{ form_widget(form.femme, {'attr': {'class': 'form-control', 'min': 0}}) }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Nombre d'enfants</label>
+                        {{ form_widget(form.enfant, {'attr': {'class': 'form-control', 'min': 0}}) }}
+                    </div>
+
+                    <hr class="my-4">
+
+                    {# Section Détails #}
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Description du bien</label>
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Type de construction, état...'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Observations</label>
+                        {{ form_widget(form.observation, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Notes particulières...'}}) }}
+                    </div>
+                </div>
+                <hr class="my-4">
+
+<hr class="my-4">
+
+<h5 class="mb-3 text-secondary">📎 Documents de la parcelle</h5>
+
+<div id="documents-wrapper"
+     data-prototype="{{ form_widget(form.documents.vars.prototype)|e('html_attr') }}">
+
+    {% for document in form.documents %}
+        <div class="card mb-3 p-3 border">
+            {{ form_row(document.typedocument) }}
+            {{ form_row(document.fichier) }}
+
+            <button type="button" class="btn btn-danger btn-sm mt-2 remove-document">
+                ❌ Supprimer
+            </button>
+        </div>
+    {% endfor %}
+
+</div>
+
+<button type="button" class="btn btn-primary mt-2" id="add-document">
+    ➕ Ajouter un document
+</button>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Retour à la liste
+                    </a>
+                    <button type="submit" class="btn btn-success px-5">
+                        <i class="bi bi-check-circle"></i> Enregistrer la parcelle
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+   <script>
+    let container = document.getElementById('documents-wrapper');
+    let index = {{ form.documents|length }};
+
+    document.getElementById('add-document').addEventListener('click', function () {
+        let prototype = container.dataset.prototype;
+
+        let newForm = prototype.replace(/__name__/g, index);
+        index++;
+
+        let div = document.createElement('div');
+        div.classList.add('card', 'mb-3', 'p-3', 'border');
+
+        div.innerHTML = newForm + `
+            <button type="button" class="btn btn-danger btn-sm mt-2 remove-document">
+                ❌ Supprimer
+            </button>
+        `;
+
+        container.appendChild(div);
+    });
+
+    // 🔥 supprimer un document
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-document')) {
+            e.target.closest('.card').remove();
+        }
+    });
+</script>
+</main>
+{% endblock %}

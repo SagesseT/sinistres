@@ -1,0 +1,138 @@
+{#
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Victime index{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <h1>Victime index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Postnom</th>
+                <th>Prenom</th>
+                <th>Sexe</th>
+                <th>Adresse</th>
+                <th>Telephone</th>
+                <th>Numerodossier</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for victime in victimes %}
+            <tr>
+                <td>{{ victime.id }}</td>
+                <td>{{ victime.nom }}</td>
+                <td>{{ victime.postnom }}</td>
+                <td>{{ victime.prenom }}</td>
+                <td>{{ victime.sexe }}</td>
+                <td>{{ victime.adresse }}</td>
+                <td>{{ victime.telephone }}</td>
+                <td>{{ victime.numerodossier }}</td>
+                <td>
+                    <a href="{{ path('app_victime_show', {'id': victime.id}) }}">show</a>
+                    <a href="{{ path('app_victime_edit', {'id': victime.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </main>
+    </table>
+
+    <a href="{{ path('app_victime_new') }}">Create new</a>
+{% endblock %}
+
+
+
+#}
+
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Victimes{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+<div class="container mt-5">
+    <h1 class="mb-4">Liste des Victimes</h1>
+
+    <!-- Barre de recherche -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Rechercher par nom, prénom, dossier..." value="{{ app.request.get('q') }}">
+            <button class="btn btn-primary" type="submit">Rechercher</button>
+        </div>
+    </form>
+
+    <!-- Bouton Ajouter -->
+   <a href="{{ path('app_victime_new') }}" class="btn btn-success mb-3">Ajouter une victime</a>
+   <a href="{{ path('app_victime_import') }}" class="btn btn-primary mb-3 ms-2">
+    <i class="bi bi-upload"></i> Importer victimes
+</a>
+
+    <!-- Tableau -->
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Numéro dossier</th>
+                <th>Nom</th>
+                <th>Postnom</th>
+                <th>Prénom</th>
+                <th>Sexe</th>
+                <th>Adresse</th>
+                <th>Téléphone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for victime in victimes %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ victime.numerodossier }}</td>
+                    <td>{{ victime.nom }}</td>
+                    <td>{{ victime.postnom }}</td>
+                    <td>{{ victime.prenom }}</td>
+                    <td>{{ victime.sexe }}</td>
+                    <td>{{ victime.adresse }}</td>
+                    <td>{{ victime.telephone }}</td>
+                    {# ... dans votre boucle {% for victime in victimes %} ... #}
+<td>
+    <div class="btn-group" role="group">
+        <a href="{{ path('app_victime_show', {'id': victime.id}) }}" class="btn btn-info btn-sm" title="Voir">Voir</a>
+        
+        {# Nouveau bouton : Ajouter une parcelle pour CETTE victime #}
+        <a href="{{ path('app_parcelle_new', {'victime': victime.id}) }}" 
+   class="btn btn-primary btn-sm">
+    ➕ Parcelle
+</a>
+
+        <a href="{{ path('app_victime_edit', {'id': victime.id}) }}" class="btn btn-warning btn-sm" title="Modifier">Modifier</a>
+        
+        <form method="post" action="{{ path('app_victime_delete', {'id': victime.id}) }}" style="display:inline-block;" onsubmit="return confirm('Voulez-vous vraiment supprimer cette victime ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ victime.id) }}">
+            <button class="btn btn-danger btn-sm">Supprimer</button>
+        </form>
+    </div>
+</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="9" class="text-center">Aucune victime trouvée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+  </main>
+{% endblock %}
