@@ -232,34 +232,57 @@ class VictimeController extends AbstractController
     // =========================
     // ✏️ EDIT
     // =========================
-    #[Route('/{id}/edit', name: 'app_victime_edit', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, Victime $victime, EntityManagerInterface $em): Response
-    {
-        $form = $this->createForm(VictimeType::class, $victime);
-        $form->handleRequest($request);
+   #[Route('/{id}/edit', name: 'app_victime_edit', requirements: ['id' => '\d+'])]
+public function edit(Request $request, Victime $victime, EntityManagerInterface $em): Response
+{
+    $oldPhoto = $victime->getPhoto();
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    $form = $this->createForm(VictimeType::class, $victime);
+    $form->handleRequest($request);
 
-            $file = $form->get('photo')->getData();
+    if ($form->isSubmitted()) {
 
-            if ($file) {
-                $filename = uniqid() . '.' . $file->guessExtension();
-                $file->move($this->getParameter('uploads_directory'), $filename);
-                $victime->setPhoto($filename);
-            }
-
-            $em->flush();
-
-            $this->addFlash('success', '✏️ Victime ' . $victime->getNom() . ' modifiée avec succès');
-
-            return $this->redirectToRoute('app_victime_index');
+        if (!$form->isValid()) {
+            dump($form->getErrors(true)); // 🔥 DEBUG
         }
 
-        return $this->render('victime/edit.html.twig', [
-            'form' => $form,
-            'victime' => $victime,
-        ]);
+        $file = $form->get('photo')->getData();
+
+        if ($file) {
+
+            // supprimer ancienne photo
+            if ($oldPhoto) {
+                $oldPath = $this->getParameter('uploads_directory') . '/' . $oldPhoto;
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
+            $filename = uniqid() . '.' . $file->guessExtension();
+
+            $file->move(
+                $this->getParameter('uploads_directory'),
+                $filename
+            );
+
+            $victime->setPhoto($filename);
+
+        } else {
+            $victime->setPhoto($oldPhoto);
+        }
+
+        $em->flush();
+
+        $this->addFlash('success', '✏️ Victime modifiée avec succès');
+
+        return $this->redirectToRoute('app_victime_index');
     }
+
+    return $this->render('victime/edit.html.twig', [
+        'form' => $form,
+        'victime' => $victime,
+    ]);
+}
 
     // =========================
     // 🗑️ DELETE
